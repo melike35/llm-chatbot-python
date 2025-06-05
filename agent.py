@@ -19,11 +19,23 @@ chat_prompt = ChatPromptTemplate.from_messages(
 
 movie_chat = chat_prompt | llm | StrOutputParser()
 
+from tools.vector import get_movie_plot
+from tools.cypher import cypher_qa
 tools = [
     Tool.from_function(
         name="General Chat",
         description="For general movie chat not covered by other tools",
         func=movie_chat.invoke,
+    ),
+    Tool.from_function(
+        name="Movie Plot Search",  
+        description="For when you need to find information about movies based on a plot",
+        func=get_movie_plot,       
+    ),
+    Tool.from_function(
+        name="Movie information",
+        description="Provide information about movies questions using Cypher",
+        func = cypher_qa
     )
 ]
 def get_memory(session_id):
